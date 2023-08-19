@@ -1,25 +1,29 @@
 import os, random, time, pygame
 
-from mutagen.mp3 import MP3
+os.system("bluetoothctl power on")
+os.system("bluetoothctl connect 0C:3B:50:7E:66:B0")
+print("Bluetooth connected")
 
-musicpath = os.path.dirname(os.path.realpath(__file__)) + "\\music\\"
+time.sleep(1)
+os.system("sudo rfcomm bind 0 0C:3B:50:7E:66:B0")
+print("Binded")
+
+time.sleep(1)
+
+musicpath = "/home/runpod/Desktop/RunPod/music/"
 music = os.listdir(musicpath)
 
-pygame.init()
-pygame.mixer.music.set_volume(1.0)
+pygame.mixer.init()
+pygame.mixer.music.set_volume(0.5)
 
 previous = ""
-endTime = 0
 
 while True:
-    if endTime < int(time.time()):
-        pygame.mixer.music.unload()
+    if not pygame.mixer.music.get_busy():
         choice = random.choice(music)
         while choice == previous:
             choice = random.choice(music)
         previous = choice
-        audio = MP3(str(musicpath + choice))
-        print(f"Playing: {choice[:-4]} ({int(audio.info.length / 60)}:{int(audio.info.length % 60)})")
-        endTime = int(time.time()) + audio.info.length
+        print(f"Playing: {choice[:-4]}")
         pygame.mixer.music.load(musicpath + choice)
         pygame.mixer.music.play(1)
