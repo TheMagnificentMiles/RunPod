@@ -16,14 +16,15 @@ music = os.listdir(musicpath)
 pygame.mixer.init()
 pygame.mixer.music.set_volume(0.5)
 
-previous = ""
+previous = ["" for x in range(5)]
 
 while True:
     if not pygame.mixer.music.get_busy():
         choice = random.choice(music)
-        while choice == previous:
+        while choice in previous:
             choice = random.choice(music)
-        previous = choice
+        previous.pop(0)
+        previous.append(choice)
         print(f"Playing: {choice[:-4]}")
         pygame.mixer.music.load(musicpath + choice)
         pygame.mixer.music.play(1)
